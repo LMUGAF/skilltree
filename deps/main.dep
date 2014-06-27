@@ -1,0 +1,55 @@
+Ablaufplan
+	welcheModule
+	modulConstraints
+	moduleOrdnenVerteilen
+	modulZeiten
+	gesamteOPhaseTerminieren
+Raumbuchungen
+	studisProVeranstaltungSchätzen
+	zuteilung
+	buchen
+
+Zentrale
+	telefon
+		beantragen
+		imGumbelSuchen {"n": 3}
+		testen
+	
+	planen
+		welcheGeräte
+		
+		welchesBüromaterial
+		
+		flowControl
+		
+		verkaufsschalter
+			was
+			wann
+			wer
+		
+		wannWoMastertreff
+	aufbauen
+		reinigungGumbelAufhängen
+		studisGumbelAufhängen
+
+Schilder
+	wo
+	aufhängPlan
+	abhängPlan
+	erstellen
+
+werbung
+	gafWebseite
+	
+	facebookErstellen
+	facebookPosten
+	
+	mathe {"include": "deps/werbung.dep"}
+	
+	physik {"include": "deps/werbung.dep"}
+	
+	info {"include": "deps/werbung.dep"}
+
+weiteres
+	wegweiserBesprechen
+	wegweiserHolen

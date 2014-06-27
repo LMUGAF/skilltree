@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="svg-pan-zoom/dist/svg-pan-zoom.min.js"></script>
+		<title>Skill tree</title>
+		<style>
+			html, body {
+				margin: 0px;
+				padding: 0px;
+				overflow: hidden;
+				font-family: sans-serif;
+				background: #7E7E8F;
+				/*background: rgb(28,34,45);*/
+				color: white;
+			}
+			
+			h1 {
+				font-weight: bold;
+				margin: 15px 0px 0px 70px;
+				text-shadow: 0px 1px 0px #999, 0px 2px 0px #888, 0px 3px 0px #777, 0px 4px 0px #666, 0px 5px 0px #555, 0px 6px 0px #444, 0px 7px 0px #333, 0px 8px 7px #001135;
+			}
+			
+			#mapContainer {
+				position: absolute;
+				left: 0px;
+				right: 0px;
+				top: 70px;
+				bottom: 0px;
+				background: url("bg2.jpg");
+				background-size: cover;
+			}
+			
+			#border {
+				position: absolute;
+				left: 0px;
+				right: 0px;
+				top: 70px;
+				height: 15px;
+				background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%,rgba(0,0,0,0) 100%);
+			}
+			
+			#map {
+				height: 100%;
+				width: 100%;
+			}
+			
+			#infoPanel {
+				position: absolute;
+				left: 10px;
+				top: 80px;
+				min-width: 200px;
+				padding: 20px;
+				margin: 0px 10px 10px 0px;
+				background: rgba(28,34,45,0.5);
+			}
+			
+			dt {
+				font-weight: bold;
+			}
+			
+			dd {
+				margin: 0px 0px 15px 0px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<h1>Skill tree</h1>
+		<div id="mapContainer">
+			<embed id="map" type="image/svg+xml" src="main.svg" />
+		</div>
+		<div id="border"></div>
+		<dl id="infoPanel" style="display: none;">
+			<dt id="uidTilte">UID</dt>
+			<dd id="uidValue"></dd>
+			
+			<dt id="nameTitle">Name</dt>
+			<dd id="nameValue"></dd>
+			
+			<dt id="descriptionTitle">Beschreibung</dt>
+			<dd id="descriptionValue"></dd>
+			
+			<dt id="statusTitle">Status</dt>
+			<dd id="statusValue"></dd>
+			
+			<dt id="notesTitle">Notizen</dt>
+			<dd id="notesValue"></dd>
+		</dl>
+		<script type="text/javascript" src="data.json.js"></script>
+		<script>
+			function uidFromEv(ev) {
+				return ev.target.getElementsByTagName("title")[0].textContent;
+			}
+			
+			function setInfoLine(data, name) {
+				t = document.getElementById(name + "Title");
+				v = document.getElementById(name + "Value");
+				
+				item = data[name]
+				if(item === null || item === "" || item === undefined) {
+					t.style.display = v.style.display = "none";
+				}
+				else {
+					t.style.display = v.style.display = "block";
+					v.innerHTML = data[name];
+				}
+			}
+			
+			function updateInfo(el) {
+				uid = el.getElementsByTagName("title")[0].textContent;
+				document.getElementById("uidValue").innerHTML = uid;
+				
+				data = uid in nodeData ? nodeData[uid] : {};
+				setInfoLine(data, "name");
+				setInfoLine(data, "description");
+				setInfoLine(data, "status");
+				setInfoLine(data, "notes");
+				infoPanel.style.display = "block";
+			}
+			
+			
+			function enter(ev) {
+				if(keepOpen) {
+					return
+				}
+				
+				updateInfo(this);
+			}
+			
+			
+			function leave(ev) {
+				if(keepOpen) {
+					return
+				}
+				
+				infoPanel.style.display = "none";
+			}
+			
+			function nodeClick(ev) {
+				keepOpen = true;
+				updateInfo(this);
+			}
+			
+			function releaseClick(ev) {
+				keepOpen = false;
+				infoPanel.style.display = "none";
+			}
+			
+			window.onload = function() {
+				svgPZ = svgPanZoom('#map', {
+					controlIconsEnabled: true
+				});
+				
+				keepOpen = false;
+				
+				infoPanel = document.getElementById("infoPanel");
+				infoPanel.addEventListener("click", releaseClick);
+				
+				svg = document.getElementById("map").getSVGDocument();
+				var nodes = svg.querySelectorAll("g.node");
+				for (var i = 0; i < nodes.length; i++) {
+					nodes[i].addEventListener("mouseenter", enter);
+					nodes[i].addEventListener("mouseleave", leave);
+					nodes[i].addEventListener("click", nodeClick);
+				}
+			};
+		</script>
+	</body>
+</html>
